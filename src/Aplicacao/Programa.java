@@ -10,6 +10,7 @@ public class Programa {
 
 		ContatoDao contatoDao = DaoFactory.createContatoDao();
 
+		System.out.println("==== TESTE 1 contato findById ====");
 		Contato contato = contatoDao.findById(1);
 		System.out.println(contato);
 	}

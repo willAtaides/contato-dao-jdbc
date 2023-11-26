@@ -50,11 +50,7 @@ public class ContatoDaoJDBC implements ContatoDao{
 			st.setLong(1, id);
 			rs = st.executeQuery();
 			if (rs.next()) {
-				Contato contato = new Contato();
-				contato.setId(rs.getLong("id"));
-				contato.setNome(rs.getString("nome"));
-				contato.setEmail(rs.getString("email"));
-				contato.setEndereco(rs.getString("endereco"));
+				Contato contato = instanciarContato(rs);
 				return contato;
 			}
 			return null;
@@ -67,6 +63,15 @@ public class ContatoDaoJDBC implements ContatoDao{
 			DB.closeResultSet(rs);
 		}
 		
+	}
+
+	private Contato instanciarContato(ResultSet rs) throws SQLException {
+		Contato contato = new Contato();
+		contato.setId(rs.getLong("id"));
+		contato.setNome(rs.getString("nome"));
+		contato.setEmail(rs.getString("email"));
+		contato.setEndereco(rs.getString("endereco"));
+		return contato;
 	}
 
 	@Override
