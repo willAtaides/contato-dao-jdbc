@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
@@ -22,8 +24,36 @@ public class ContatoDaoJDBC implements ContatoDao{
 	
 	@Override
 	public void insert(Contato contato) {
-		// TODO Auto-generated method stub
-		
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"INSERT INTO contatos (nome, email, endereco) VALUES (?, ?, ?)",
+	                Statement.RETURN_GENERATED_KEYS);
+
+	        st.setString(1, contato.getNome());
+	        st.setString(2, contato.getEmail());
+	        st.setString(3, contato.getEndereco());
+			
+			int rowsAffected =  st.executeUpdate();
+			
+			if(rowsAffected > 0) {
+				ResultSet rs = st.getGeneratedKeys();
+				if(rs.next()) {
+					int id = rs.getInt(1);
+					contato.setId(id);
+				}
+				DB.closeResultSet(rs);
+			}
+			else {
+				throw new DbException("Erro Inesperado! Nenhuma linha foi afetada! ");
+			}
+			
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
@@ -76,9 +106,27 @@ public class ContatoDaoJDBC implements ContatoDao{
 
 	@Override
 	public List<Contato> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		 PreparedStatement st = null;
+		    ResultSet rs = null;
+		    List<Contato> contatos = new ArrayList<>();
+
+		    try {
+		        st = conn.prepareStatement("SELECT * FROM contatos ORDER BY nome");
+		        rs = st.executeQuery();
+
+		        while (rs.next()) {
+		            Contato contato = instanciarContato(rs);
+		            contatos.add(contato);
+		        }
+		    } catch (SQLException e) {
+		        throw new DbException(e.getMessage());
+		    } finally {
+		        DB.closeStatement(st);
+		        DB.closeResultSet(rs);
+		    }
+
+		    return contatos;
+		}
 
 	@Override
 	public List<Contato> findByFirstLetter(char firstLetter) {

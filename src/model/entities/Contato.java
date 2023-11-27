@@ -7,7 +7,7 @@ public class Contato implements Serializable {
 	
 
 	private static final long serialVersionUID = 1L;
-	private long id;
+	private Long id;
 	private String nome;
 	private String email;
 	private String endereco;
@@ -16,8 +16,8 @@ public class Contato implements Serializable {
 		
 	}
 
-	public Contato(long i, String nome, String email, String endereco) {
-		this.id = i;
+	public Contato(Long id, String nome, String email, String endereco) {
+		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.endereco = endereco;
