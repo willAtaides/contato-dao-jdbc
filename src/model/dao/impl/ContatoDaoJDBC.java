@@ -74,8 +74,21 @@ public class ContatoDaoJDBC implements ContatoDao {
 
 	@Override
 	public void deleteById(long id) {
-		// TODO Auto-generated method stub
 
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("delete from contatos where id = ?");
+			
+			st.setLong(1,id);
+			
+			st.executeUpdate();
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
@@ -135,8 +148,29 @@ public class ContatoDaoJDBC implements ContatoDao {
 
 	@Override
 	public List<Contato> findByFirstLetter(char firstLetter) {
-		// TODO Auto-generated method stub
-		return null;
+		 PreparedStatement st = null;
+		    ResultSet rs = null;
+		    List<Contato> contatos = new ArrayList<>();
+
+		    try {
+		        st = conn.prepareStatement("select * from contatos where lower(substring(nome, 1, 1)) = ?");
+		        st.setString(1, String.valueOf(firstLetter).toLowerCase());
+
+		        rs = st.executeQuery();
+
+		        while (rs.next()) {
+		            Contato contato = instanciarContato(rs);
+		            contatos.add(contato);
+		        }
+		    } catch (SQLException e) {
+		        throw new DbException(e.getMessage());
+		    } finally {
+		        DB.closeStatement(st);
+		        DB.closeResultSet(rs);
+		    }
+
+		    return contatos;
+		}
 	}
 
-}
+

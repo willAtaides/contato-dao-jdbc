@@ -1,6 +1,7 @@
 package Aplicacao;
 
 import java.util.List;
+import java.util.Scanner;
 
 import model.dao.ContatoDao;
 import model.dao.DaoFactory;
@@ -9,7 +10,7 @@ import model.entities.Contato;
 public class Programa {
 
 	public static void main(String[] args) {
-
+		Scanner sc = new Scanner(System.in);
 		ContatoDao contatoDao = DaoFactory.createContatoDao();
 
 		System.out.println("==== TESTE 1 contato findById ====");
@@ -33,5 +34,18 @@ public class Programa {
 		contatoDao.update(contato);
 		System.out.println("Update completo");
 
+		System.out.println("==== TESTE 4 contato delete ====");
+		System.out.println("Entre com o id que deseja deletar: ");
+		Long id = sc.nextLong();
+		contatoDao.deleteById(id);
+		System.out.println("Delete completo");
+		
+		System.out.println("==== TESTE 5 contato findByFirstLetter ====");
+		List<Contato> contatosComLetraA = contatoDao.findByFirstLetter('C');
+		for (Contato cont : contatosComLetraA) {
+		    System.out.println(cont);
+		}
+		
+		sc.close();
 	}
 }
